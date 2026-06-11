@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>はじめての画面</title>
+</head>
+<body>
+    <h2>あなたの名前を教えてください</h2>
+    <p 	th:if="${errorMessage}" th:text="${errorMessage}" style="color:red; font-weight:bold;"></p>
+	    <form action="/greet" method="post">
+        <input type="text" name="userName" placeholder="名前を入力">
+		<input type="text" name="userage" placeholder="年齢を入力">
+        <button type="submit">送信する</button>
+    </form>
+    
+</body>
+</html>
