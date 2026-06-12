@@ -20,14 +20,17 @@
 
 package com.example.demo;
 
+import org.springframework.beans.factory.annotation.Autowired;// ←追加
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping; // ←追加
-import org.springframework.web.bind.annotation.RequestParam; // ←追加
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HelloController {
+	@Autowired
+	private UserRepository userRepository;
 
     // ①最初の画面を表示するメソッド
     @GetMapping("/hello")
@@ -37,11 +40,23 @@ public class HelloController {
 
     // ②フォームから送られてきたデータを受け取るメソッド
     @PostMapping("/greet")
-    public String greet(@RequestParam("userName") String name,@RequestParam(required = false) Integer userage, Model model) {
+    public String greet(@RequestParam("userName") String name,@RequestParam(value = "userage",required = false) Integer userage, Model model) {
        if (name==null || name.isEmpty() || userage==null) {
 		model.addAttribute("errorMessage","空白はやめてくださいな。名前と年齢を両方入力してください");
 		return "hello";
 	}
+    // ==================================================
+       // ✨【ここが新機能！】データベースへの保存処理
+       // ==================================================
+       // 1. 保存するための新しい「User」の箱（オブジェクト）を作ります
+       User user = new User();
+    // 2. 画面から届いた名前と年齢を、箱に入れます
+       user.setName(name);
+    // 3. Repositoryに「これデータベースに保存しといて！」と頼みます
+       user.setUserAge(userage);
+       userRepository.save(user);
+    // ==================================================
+       
     	String message;
     	if (userage >= 20) {
 			message=name+"さん("+userage+"歳)は、お酒が飲めますね";
